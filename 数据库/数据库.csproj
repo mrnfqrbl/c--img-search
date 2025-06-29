@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+  Project 元素是 csproj 文件的根元素。
+  Sdk 属性指定使用哪个 SDK 来构建项目。
+  Microsoft.NET.Sdk 是一个通用的 SDK，适用于大多数 .NET 项目。
+  -->
+
+  <PropertyGroup>
+    <!--
+    PropertyGroup 元素包含项目的属性设置。
+    -->
+
+    <TargetFramework>net8.0</TargetFramework>
+    <!-- <RuntimeFrameworkVersion>8.0.17</RuntimeFrameworkVersion> -->
+    <!--
+    TargetFramework 属性指定项目要面向的目标 .NET 运行时版本。
+    net8.0 表示 .NET 8.0。
+    -->
+
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!--
+    ImplicitUsings 属性启用隐式 using 指令。
+    启用后，编译器会自动添加一些常用的命名空间，例如 System，System.Collections.Generic 等，
+    从而减少代码中的 using 语句。
+    -->
+
+    <Nullable>enable</Nullable>
+    <!--
+    Nullable 属性启用可空引用类型。
+    启用后，编译器会强制检查代码中的可空引用类型，
+    从而提高代码的安全性。
+    -->
+
+    <OutputType>Library</OutputType>
+    <!--
+    OutputType 属性指定项目的输出类型。
+    Library 表示项目将编译成一个类库 (DLL)。
+    Exe 表示项目将编译成一个可执行文件 (EXE)。
+    -->
+
+    <AssemblyName>数据库</AssemblyName>
+    <!--
+    AssemblyName 属性指定生成的程序集名称。
+    程序集名称通常与 DLL 文件名相同。
+    -->
+
+    <RootNamespace>数据库</RootNamespace>
+    <!--
+    RootNamespace 属性指定项目的根命名空间。
+    根命名空间用于组织代码中的类型。
+    -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
+  </ItemGroup>
+
+
+
+</Project>

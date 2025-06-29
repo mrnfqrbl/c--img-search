@@ -1,0 +1,140 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using 数据库; // 引用你的类库命名空间
+
+namespace RavenDB测试控制台
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            try
+            {
+                // 启动数据库服务（保持不变）
+                string baseDirectory = AppContext.BaseDirectory;
+
+            // 设置数据目录路径
+                string dataDirectory = Path.Combine(baseDirectory, "data");
+                数据库服务.启动服务(dataDirectory, 8082, "test");
+                Console.WriteLine("数据库服务启动成功!");
+
+                // 创建仓储实例（保持不变）
+                var 仓储 = new 基础仓储<Person>();
+
+                // 插入数据（保持不变）
+                var person1 = new Person { Name = "张三", Age = 30, City = "北京" };
+                var person2 = new Person { Name = "李四", Age = 25, City = "上海" };
+                
+                person1.Id = await 仓储添加(person1);
+                person2.Id = await 仓储添加(person2);
+                Console.WriteLine("数据插入成功!");
+
+                // 批量插入（保持不变）
+                List<Person> persons = new List<Person>
+                {
+                    new Person { Name = "王五", Age = 40, City = "广州" },
+                    new Person { Name = "赵六", Age = 35, City = "深圳" }
+                };
+
+                foreach (var person in persons)
+                {
+                    await 仓储添加(person);
+                }
+                Console.WriteLine("批量数据插入成功!");
+
+                // 查询数据（保持不变）
+                var 查询结果 = await 仓储获取所有<Person>();
+                Console.WriteLine("查询所有结果:");
+                foreach (var person in 查询结果)
+                {
+                    Console.WriteLine($"  姓名: {person.Name}, 年龄: {person.Age}, 城市: {person.City}");
+                }
+
+                // 查询单个（保持不变）
+                var 单个结果 = await 仓储获取<Person>(person1.Id);
+                if (单个结果 != null)
+                {
+                    Console.WriteLine($"  查询单个结果: 姓名: {单个结果.Name}, 年龄: {单个结果.Age}, 城市: {单个结果.City}");
+                }
+
+                // 更新数据（保持不变）
+                if (person1.Id != null)
+                {
+                    person1.Age = 32;
+                    person1.City = "天津";
+                    await 仓储更新(person1);
+                    Console.WriteLine("数据更新成功!");
+                }
+
+                // 删除数据（保持不变）
+                if (person2.Id != null)
+                {
+                    await 仓储删除<Person>(person2.Id);
+                    Console.WriteLine("数据删除成功!");
+                }
+
+                // 重新查询（保持不变）
+                查询结果 = await 仓储获取所有<Person>();
+                Console.WriteLine("删除后查询结果:");
+                foreach (var person in 查询结果)
+                {
+                    Console.WriteLine($"  姓名: {person.Name}, 年龄: {person.Age}, 城市: {person.City}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"发生错误: {ex.Message}");
+            }
+            finally
+            {
+                // 停止服务（保持不变）
+                数据库服务.停止服务();
+                Console.WriteLine("数据库服务已停止.");
+            }
+
+            Console.ReadKey();
+        }
+
+        // 修复点1：添加仓储实例方法前缀
+        static async Task<string> 仓储添加<T>(T 实体) where T : 实体基类
+        {
+            using var 仓储 = new 基础仓储<T>();
+            return await 仓储.添加(实体); // 添加"仓储."前缀
+        }
+
+        // 修复点2：同步修正所有辅助方法
+        static async Task<List<T>> 仓储获取所有<T>() where T : 实体基类
+        {
+            using var 仓储 = new 基础仓储<T>();
+            return await 仓储.获取所有(); // 添加"仓储."前缀
+        }
+
+        static async Task<T?> 仓储获取<T>(string id) where T : 实体基类
+        {
+            using var 仓储 = new 基础仓储<T>();
+            return await 仓储.获取(id); // 添加"仓储."前缀
+        }
+
+        static async Task 仓储更新<T>(T 实体) where T : 实体基类
+        {
+            using var 仓储 = new 基础仓储<T>();
+            await 仓储.更新(实体); // 添加"仓储."前缀
+        }
+
+        // 修复点3：显式调用仓储实例方法
+        static async Task 仓储删除<T>(string id) where T : 实体基类
+        {
+            using var 仓储 = new 基础仓储<T>();
+            await 仓储.删除(id); // 关键修复：添加"仓储."前缀
+        }
+    }
+
+    // 测试数据类（保持不变）
+    public class Person : 实体基类
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public string City { get; set; }
+    }
+}
