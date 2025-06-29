@@ -1,5 +1,26 @@
-Raven.Embedded.dll
-./*/bin/
-./*/obj/
-./*/packages/
+# 通用忽略规则
+**/bin/
+**/obj/
+**/packages/
+**/*.pdb
+**/*.cache
+**/*.deps.json
+**/*.dll.config
 
+# C# 项目特定忽略
+**/bin/**
+**/obj/**
+**/publish/**
+**/*.assets.json
+**/*.nuget.cache
+**/*.csproj.nuget.*
+**/*.user
+**/*.suo
+**/.vs/
+**/.vscode/
+
+# 数据库和日志文件
+**/data/**
+**/*.log
+**/*.journal
+**/Raven.voron
